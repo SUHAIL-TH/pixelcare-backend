@@ -1,5 +1,7 @@
 const express=require('express')
-const userRouter=express()
+const adminRouter=express()
+const adminController=require('../controllers/adminController')
+adminRouter.post('/postlogin',adminController.postlogin)
 
 
-module.exports=userRouter
+module.exports=adminRouter

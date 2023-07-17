@@ -32,5 +32,5 @@ app.use((req, res, next) => {
 
 
   app.listen(process.env.PORT, () => {
-    console.log("Server started listening ato port");
+    console.log("Server started listening to port");
   });

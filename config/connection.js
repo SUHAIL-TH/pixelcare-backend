@@ -7,7 +7,7 @@ module.exports={
             useNewUrlParser:true,
             useUnifiedTopology:true,
         }).then(()=>{
-            console.log("server started to listening")
+            console.log("connect successfully")
         }).catch((err)=>{
             console.log(err);
         })
