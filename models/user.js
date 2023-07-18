@@ -26,6 +26,12 @@ const userSchema=new mongoose.Schema({
     isverified:{
         type:Boolean,
         default:false
+    },
+    jwttoken:{
+        type:String
+    },
+    token:{
+        type:String
     }
     // favorite:[{
     //     professionalId:{

@@ -6,6 +6,9 @@ const userController=require("../controllers/userController")
 userRouter.post("/signup",userController.postSignup)
 userRouter.post("/postotp",userController.postotp)
 userRouter.post("/postlogin",userController.postlogin)
+userRouter.post('/resentotp',userController.resentotp)
+userRouter.post('/verifynumber',userController.verifynumber)
+userRouter.post("/resetpassword",userController.resetpassword)
 
 
 
