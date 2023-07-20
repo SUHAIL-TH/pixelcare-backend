@@ -6,6 +6,7 @@ const app=express()
 const cors=require('cors')
 const adminRouter = require("./routes/admin");
 const userRouter = require("./routes/user");
+const professionalRouter=require("./routes/professional")
 const path=require('path')
 const dbconnect = require("./config/connection");
 
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
   });
 
   app.use("/",userRouter)
+  app.use("/professional",professionalRouter)
   app.use("/admin",adminRouter)
 
 

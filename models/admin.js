@@ -7,7 +7,7 @@ const adminSchema=new mongoose.Schema({
     password:{
         type:Number,
         required:true
-    }
+    },
 })
 
 module.exports=mongoose.model('admin',adminSchema)
