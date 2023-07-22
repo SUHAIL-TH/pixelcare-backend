@@ -14,7 +14,7 @@ dotenv.config()
 
 // html: `<p>Hi ${name}, please click the link below and <a href="http://localhost:4200/resetsubmit?token=${token}&email=${email}">Reset</a> your password.</p>`
 ////nodemailer for reset password
-const sendresetPasswordMail= async (name, email, token) => {
+const sendresetPasswordMail = async (name, email, token) => {
     try {
         const transporter = nodemailer.createTransport({
             service: "gmail",
@@ -29,7 +29,8 @@ const sendresetPasswordMail= async (name, email, token) => {
             subject: "Link for reset password",
             html: `<p>Hi ${name}, please click the link below and <a href="http://localhost:4200/resetsubmit?token=${token}">Reset</a> your password.</p>`
         }
-        transporter.sendMail(mailOption, function (error, infor) {a
+        transporter.sendMail(mailOption, function (error, infor) {
+            a
             if (error) {
                 console.log(error);
             } else {
@@ -149,15 +150,22 @@ const postlogin = async (req, res) => {
     if (!(await bcrypt.compare(req.body.password, user.password))) {
 
         return res.status(400).send({ message: "Invalid user name or password" })
-    }
-    const { _id } = await user.toJSON();
-    const token = jwt.sign({ _id: _id }, "secret")
-    const result = await User.updateOne({ _id: user._id }, { $set: { jwttoken: token } })
-    console.log(result)
-    res.json({
-        token: token,
+    } else {
+        if (user.status) {
+            const { _id } = await user.toJSON();
+            const token = jwt.sign({ _id: _id }, "secret")
+            const result = await User.updateOne({ _id: user._id }, { $set: { jwttoken: token } })
 
-    })
+           return res.json({
+                token: token,
+
+            })
+
+        }else{
+            return res.status(400).json({message:"Your are Blocked"})
+        }
+    }
+
 }
 
 const resentotp = async (req, res) => {
@@ -177,19 +185,19 @@ const resentotp = async (req, res) => {
 const verifynumber = async (req, res) => {
     try {
         const email = req.body.email
-        const acname = await User.findOne({ email: email }) 
+        const acname = await User.findOne({ email: email })
         console.log(acname);
 
-        if (acname!==null) {
+        if (acname !== null) {
             console.log("hii");
             if (acname.status === true) {
                 const randomstring = randomString.generate()
-                
+
                 const data = await User.updateOne({ email: email }, { $set: { token: randomstring } })
                 sendresetPasswordMail(acname.name, acname.email, randomstring)
-                res.send({message:"hii"})
+                res.send({ message: "hii" })
             } else {
-                res.status(400).send({message:"This email is blocked"})
+                res.status(400).send({ message: "This email is blocked" })
             }
 
 
@@ -197,7 +205,7 @@ const verifynumber = async (req, res) => {
 
         } else {
             res.status(400).send({
-                message:"Email is not found"
+                message: "Email is not found"
             })
         }
 
@@ -208,19 +216,19 @@ const verifynumber = async (req, res) => {
 
 
 }
-const resetpassword=async(req,res)=>{
+const resetpassword = async (req, res) => {
     console.log(req.body)
     try {
-        let acname=await User.findOne({token:req.body.token})
+        let acname = await User.findOne({ token: req.body.token })
 
-        if(acname){
-            let newpassword=await bcrypt.hash(req.body.password,10)
-            await User.updateOne({_id:acname._id},{$set:{password:newpassword}})
-            
-            res.send({message:"success"})
+        if (acname) {
+            let newpassword = await bcrypt.hash(req.body.password, 10)
+            await User.updateOne({ _id: acname._id }, { $set: { password: newpassword } })
 
-        }else{
-            res.status(400).send({message:"Token has expired"})
+            res.send({ message: "success" })
+
+        } else {
+            res.status(400).send({ message: "Token has expired" })
         }
     } catch (error) {
         console.log(error)

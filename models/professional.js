@@ -1,4 +1,4 @@
-const mongose=require("mongoose")
+const mongoose=require("mongoose")
 
 const professionalSchema=new mongoose.Schema({
     name:{
@@ -20,7 +20,7 @@ const professionalSchema=new mongoose.Schema({
 
     },
     phone:{
-        type:number,
+        type:Number,
         required:true
     },
     blocked:{
@@ -52,8 +52,22 @@ const professionalSchema=new mongoose.Schema({
         }
     ],
     password:{
-        tppe:String,
+        type:String,
         required:true
+    },
+    certificate:{
+        type:String,
+
+    },
+    photo:{
+        type:String
+    },
+    profile:{
+        type:String
+    },
+    verifeid:{
+        type:Boolean,
+        default:false
     }
 })
 
