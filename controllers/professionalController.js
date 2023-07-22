@@ -18,7 +18,7 @@ const postsignup=async(req,res)=>{
                 phone:req.body.phone,
                 email:req.body.email,
                 password:hashpassword,
-                place:req.body.place,
+                place:req.body.place,           
                 certificate:imageFile.filename,
                 photo:photoFile.filename 
               })

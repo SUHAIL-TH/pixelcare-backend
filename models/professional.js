@@ -68,6 +68,17 @@ const professionalSchema=new mongoose.Schema({
     verifeid:{
         type:Boolean,
         default:false
+    },
+    experinces:{
+        type:Number,
+        default:0
+    },
+    about:{
+        type:String
+    },
+    specialized:{
+        type:String,
+        defalut:"wedding Photography"
     }
 })
 

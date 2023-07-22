@@ -9,6 +9,7 @@ userRouter.post("/postlogin",userController.postlogin)
 userRouter.post('/resentotp',userController.resentotp)
 userRouter.post('/verifynumber',userController.verifynumber)
 userRouter.post("/resetpassword",userController.resetpassword)
+userRouter.get('/getprofessionallist',userController.getprofessionallist)
 
 
 

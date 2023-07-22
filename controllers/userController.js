@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const professional=require('../models/professional')
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken')
 // const multer=require('multer')
@@ -234,6 +235,15 @@ const resetpassword = async (req, res) => {
         console.log(error)
     }
 }
+const getprofessionallist=async(req,res)=>{
+    try {
+        let data=await professional.find({isVerified:true,blocked:false}) 
+        console.log(data);
+        res.json(data)
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 module.exports = {
     postSignup,
@@ -241,5 +251,6 @@ module.exports = {
     postlogin,
     resentotp,
     verifynumber,
-    resetpassword
+    resetpassword,
+    getprofessionallist
 }
