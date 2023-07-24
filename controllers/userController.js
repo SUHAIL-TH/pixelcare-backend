@@ -1,5 +1,5 @@
 const User = require('../models/user')
-const professional=require('../models/professional')
+const professional = require('../models/professional')
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken')
 // const multer=require('multer')
@@ -157,13 +157,13 @@ const postlogin = async (req, res) => {
             const token = jwt.sign({ _id: _id }, "secret")
             const result = await User.updateOne({ _id: user._id }, { $set: { jwttoken: token } })
 
-           return res.json({
+            return res.json({
                 token: token,
 
             })
 
-        }else{
-            return res.status(400).json({message:"Your are Blocked"})
+        } else {
+            return res.status(400).json({ message: "Your are Blocked" })
         }
     }
 
@@ -235,14 +235,26 @@ const resetpassword = async (req, res) => {
         console.log(error)
     }
 }
-const getprofessionallist=async(req,res)=>{
+const getprofessionallist = async (req, res) => {
     try {
-        let data=await professional.find({isVerified:true,blocked:false}) 
+        let data = await professional.find({ isVerified: true, blocked: false })
         console.log(data);
         res.json(data)
     } catch (error) {
         console.log(error);
     }
+}
+const getprofessionaldata = async (req, res) => {
+    try {
+        let id = req.query.id
+
+        let data = await professional.findOne({ _id: id })
+        console.log(data);
+        res.json(data)
+    } catch (error) {
+        console.log(error)
+    }
+
 }
 
 module.exports = {
@@ -252,5 +264,6 @@ module.exports = {
     resentotp,
     verifynumber,
     resetpassword,
-    getprofessionallist
+    getprofessionallist,
+    getprofessionaldata
 }

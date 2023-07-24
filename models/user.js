@@ -1,37 +1,37 @@
-const mongoose=require("mongoose")
+const mongoose = require("mongoose")
 
-const userSchema=new mongoose.Schema({
-    name:{
-        type:String,
-        required:true
+const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true,
+    email: {
+        type: String,
+        required: true,
+        unique: true,
     },
-    password:{
-        type:String,
-        required:true,
-        trim:true
+    password: {
+        type: String,
+        required: true,
+        trim: true
     },
-    phone:{
-        type:Number,
-        required:true
+    phone: {
+        type: Number,
+        required: true
     },
-    status:{
-        type:Boolean,
-        default:true
+    status: {
+        type: Boolean,
+        default: true
     },
-    isverified:{
-        type:Boolean,
-        default:false
+    isverified: {
+        type: Boolean,
+        default: false
     },
-    jwttoken:{
-        type:String
+    jwttoken: {
+        type: String
     },
-    token:{
-        type:String
+    token: {
+        type: String
     }
     // favorite:[{
     //     professionalId:{
@@ -41,4 +41,4 @@ const userSchema=new mongoose.Schema({
 
 })
 
-module.exports=mongoose.model('user',userSchema)
+module.exports = mongoose.model('user', userSchema)
