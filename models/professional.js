@@ -62,9 +62,7 @@ const professionalSchema = new mongoose.Schema({
     photo: {
         type: String
     },
-    profile: {
-        type: String
-    },
+
     verifeid: {
         type: Boolean,
         default: false
@@ -73,16 +71,23 @@ const professionalSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    
+
     specialized: {
         type: String,
         default: "wedding Photography"
     },
     images: [
         {
-            type: String,
+            image: {
+                type: String,
 
-        },
+            },
+            discription: {
+                type: String
+            }
+
+        }
+
     ],
     aboutus: {
         type: String

@@ -72,23 +72,23 @@ const postSignup = async (req, res) => {
         })
     } else {
         let hashedpassword = await bcrypt.hash(req.body.password, 10)
-        const result = {
-            name: req.body.name,
-            email: req.body.email,
-            phone: req.body.phone,
-            password: hashedpassword
-        }
-        //this is the code for save the user first if user enter the sign up button
-        // const results=new User({
-        //     name:req.body.name,
-        //     email:req.body.email,
-        //     phone:req.body.phone,
-        //     password:hashedpassword
-        // })
+        // const result = {
+        //     name: req.body.name,
+        //     email: req.body.email,
+        //     phone: req.body.phone,
+        //     password: hashedpassword
+        // }
+        // this is the code for save the user first if user enter the sign up button and later we want to verify using the otp
+        const results=new User({
+            name:req.body.name,
+            email:req.body.email,
+            phone:req.body.phone,
+            password:hashedpassword
+        })
 
 
 
-        // await results.save()
+        await results.save()
 
 
 
@@ -102,7 +102,7 @@ const postSignup = async (req, res) => {
 
 
         res.json({
-            data: result
+            data: results
 
         })
     }
@@ -110,6 +110,7 @@ const postSignup = async (req, res) => {
 const postotp = async (req, res) => {
     const otp = req.body.otp
 
+    console.log(req.body)
 
     const result = await twilio.verify.v2
         .services("VA4b9331e54c68f1726cd24a61b00d87f9")
@@ -120,13 +121,14 @@ const postotp = async (req, res) => {
     if (result.valid === true) {
 
         await User.updateOne({ email: req.body.phone.email }, { $set: { isverified: true } })
-        const user = new User({
-            name: req.body.phone.name,
-            email: req.body.phone.email,
-            phone: req.body.phone.phone,
-            password: req.body.phone.password
-        })
-        const result = await user.save()
+        // const user = new User({
+        //     name: req.body.phone.name,
+        //     email: req.body.phone.email,
+        //     phone: req.body.phone.phone,
+        //     password: req.body.phone.password
+        // })
+        // const result = await user.save()
+        
         res.json({
             message: "verification is success"
         })
@@ -142,6 +144,7 @@ const postotp = async (req, res) => {
 const postlogin = async (req, res) => {
 
     let user = await User.findOne({ email: req.body.email })
+    console.log(user);
 
     if (!user) {
         return res.status(400).send({
@@ -150,21 +153,31 @@ const postlogin = async (req, res) => {
     }
     if (!(await bcrypt.compare(req.body.password, user.password))) {
 
-        return res.status(400).send({ message: "Invalid user name or password" })
+        return res.status(400).send({ message: "Invalid Password" })
     } else {
-        if (user.status) {
-            const { _id } = await user.toJSON();
-            const token = jwt.sign({ _id: _id }, "secret")
-            const result = await User.updateOne({ _id: user._id }, { $set: { jwttoken: token } })
+        if(user.isverified){
+            if (user.status) {
+                const { _id } = await user.toJSON();
+                const token = jwt.sign({ _id: _id }, "secret")
+                const result = await User.updateOne({ _id: user._id }, { $set: { jwttoken: token } })
+    
+                return res.json({
+                    token: token,
+    
+                })
+    
+            } else {
+                return res.status(400).json({ message: "Your are Blocked" })
+            }
 
-            return res.json({
-                token: token,
-
-            })
-
-        } else {
-            return res.status(400).json({ message: "Your are Blocked" })
+        }else{
+            return res.status(400).json({
+                message:"Your account is not verifid please verify it",
+                phone:user.phone,
+                email:user.email
+        })
         }
+       
     }
 
 }
@@ -256,6 +269,20 @@ const getprofessionaldata = async (req, res) => {
     }
 
 }
+const verifyaccount=async(req,res)=>{
+    try {
+        let phone=req.query.phone
+        await twilio.verify.v2
+        .services("VA4b9331e54c68f1726cd24a61b00d87f9")
+        .verifications.create({
+            to: "+91" +phone,
+            channel: "sms",
+        });
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 module.exports = {
     postSignup,
@@ -265,5 +292,6 @@ module.exports = {
     verifynumber,
     resetpassword,
     getprofessionallist,
-    getprofessionaldata
+    getprofessionaldata,
+    verifyaccount
 }
