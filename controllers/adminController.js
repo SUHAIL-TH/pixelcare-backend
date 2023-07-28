@@ -1,6 +1,7 @@
 const Admin = require('../models/admin')
 const User = require('../models/user')
 const Banner = require('../models/banner')
+const jwt = require('jsonwebtoken')
 const professional = require('../models/professional')
 
 
@@ -9,9 +10,9 @@ const postlogin = async (req, res) => {
     adminexsist = await Admin.findOne({ email: req.body.email })
     if (adminexsist) {
         if (adminexsist.password == req.body.password) {
-            res.send({
-                message: "success"
-            })
+            const { _id } = await adminexsist.toJSON();
+            const token = jwt.sign({ _id: _id }, "secretadmin",)
+            res.json(token)
         } else {
             res.status(400).json({ message: "Invalid password" })
         }

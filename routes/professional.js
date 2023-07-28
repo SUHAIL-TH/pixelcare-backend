@@ -40,4 +40,5 @@ professionalRouter.get("/getprofileData",professionalController.getprofileData)
 professionalRouter.post('/changeprofile',upload.single('profile'),professionalController.changeProfile)
 professionalRouter.post('/posteditprofile',professionalController.posteditprofile)
 professionalRouter.post('/postaddimage',upload.single('uploadimage'),professionalController.addphotos)
+professionalRouter.get('/getbookingdata',professionalController.getbookingdata)
 module.exports = professionalRouter

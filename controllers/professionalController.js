@@ -1,6 +1,7 @@
 const professional = require('../models/professional')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const booking=require('../models/booking')
 const postsignup = async (req, res) => {
     try {
 
@@ -176,6 +177,33 @@ const addphotos=async(req,res)=>{
         console.log(error)
     }
 }
+const getbookingdata=async(req,res)=>{
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        jwt.verify(token, 'secretprofessional', async (err, decoded) => {
+            if (err) {
+                console.log(err);
+                res.status(401).json({
+                    auth: false,
+                    status: "failed",
+                    message: "Failed to authenticate",
+                });
+            } else {
+
+                const Id = decoded._id;
+                
+                const data=await booking.find({professional:Id}).populate('user')
+                console.log(data)
+                res.json(data)
+
+            }
+
+        });
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 module.exports = {
     postsignup,
@@ -183,6 +211,7 @@ module.exports = {
     getprofileData,
     changeProfile,
     posteditprofile,
-    addphotos
+    addphotos,
+    getbookingdata
 
 }

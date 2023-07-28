@@ -2,13 +2,12 @@ const User = require('../models/user')
 const professional = require('../models/professional')
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken')
-// const multer=require('multer')
 const randomString = require("randomstring")
 const path = require('path');
 const dotenv = require('dotenv');
 const nodemailer = require("nodemailer");
-const user = require('../models/user');
-const { token } = require('morgan');
+
+const bookings=require('../models/booking')
 
 
 dotenv.config()
@@ -283,6 +282,76 @@ const verifyaccount=async(req,res)=>{
         console.log(error)
     }
 }
+const booking=async(req,res)=>{
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+    
+        jwt.verify(token, 'secret', async (err, decoded) => {
+            if (err) {
+              
+                res.status(401).json({
+                    auth: false,
+                    status: "failed",
+                    message: "Failed to authenticate",
+                });
+            } else {
+
+                const userId = decoded._id;
+               
+                
+                let result=new bookings({
+                    user:userId,
+                    name:req.body.name,
+                    housename:req.body.housename,
+                    place:req.body.place,
+                    event:req.body.event,
+                    date:req.body.date,
+                    phone:req.body.phone,
+                    professional:req.body.professional,
+                    amount:req.body.amount
+
+
+                })
+                await result.save()
+                res.json({
+                    message:"sucess"
+                })
+            }
+
+        });
+        
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
+const getbookingdatas=async(req,res)=>{
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+    
+        jwt.verify(token, 'secret', async (err, decoded) => {
+            if (err) {
+              
+                res.status(401).json({
+                    auth: false,
+                    status: "failed",
+                    message: "Failed to authenticate",
+                });
+            } else {
+
+                const userId = decoded._id;
+               let datas=await bookings.find ({user:userId,status:true}).populate("professional")
+               console.log(datas)
+                
+                res.json(datas)
+            }
+
+        });
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 module.exports = {
     postSignup,
@@ -293,5 +362,7 @@ module.exports = {
     resetpassword,
     getprofessionallist,
     getprofessionaldata,
-    verifyaccount
+    verifyaccount,
+    booking,
+    getbookingdatas
 }

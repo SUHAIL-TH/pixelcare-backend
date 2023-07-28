@@ -12,6 +12,8 @@ userRouter.post("/resetpassword", userController.resetpassword)
 userRouter.get('/getprofessionallist', userController.getprofessionallist)
 userRouter.get('/professionaldata', userController.getprofessionaldata)
 userRouter.get('/verifyaccount',userController.verifyaccount)
+userRouter.post('/booking',userController.booking)
+userRouter.get('/getbookingdatas',userController.getbookingdatas)
 
 
 module.exports = userRouter

@@ -32,12 +32,9 @@ const userSchema = new mongoose.Schema({
     },
     token: {
         type: String
-    }
-    // favorite:[{
-    //     professionalId:{
-    //         type:mongoose.isValidObjectId
-    //     }
-    // }]
+    },
+    
+  
 
 })
 
