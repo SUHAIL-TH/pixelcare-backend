@@ -41,4 +41,7 @@ professionalRouter.post('/changeprofile',upload.single('profile'),professionalCo
 professionalRouter.post('/posteditprofile',professionalController.posteditprofile)
 professionalRouter.post('/postaddimage',upload.single('uploadimage'),professionalController.addphotos)
 professionalRouter.get('/getbookingdata',professionalController.getbookingdata)
+professionalRouter.get('/professionalchatlist',professionalController.professionalchats)
+professionalRouter.get('/findchat/:userid',professionalController.findchat)
+professionalRouter.post('/message',professionalController.addmessage)
 module.exports = professionalRouter

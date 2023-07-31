@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const objectId=mongoose.Types.ObjectId 
 
 const professionalSchema = new mongoose.Schema({
     name: {
@@ -31,26 +32,7 @@ const professionalSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    booking: [
-        {
-            name: {
-                type: String
-            },
-            place: {
-                type: String
-            },
-            housename: {
-                type: String
-            },
-            phone: {
-                type: Number
-            },
-            date: {
-                type: String,
-            }
 
-        }
-    ],
     password: {
         type: String,
         required: true
@@ -91,7 +73,21 @@ const professionalSchema = new mongoose.Schema({
     ],
     aboutus: {
         type: String
-    }
+    },
+    reviews:[
+        {
+            user:{
+                type:objectId,
+                ref:"user",
+                 required:true
+            },
+            review:{
+                type:String,
+                required:true
+            }
+            
+        }
+    ]
 })
 
 module.exports = mongoose.model("professionals", professionalSchema)

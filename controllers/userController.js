@@ -6,8 +6,12 @@ const randomString = require("randomstring")
 const path = require('path');
 const dotenv = require('dotenv');
 const nodemailer = require("nodemailer");
+const connection = require('../models/connection')
+const message = require('../models/message')
+const bookings = require('../models/booking')
+const banner=require('../models/banner')
 
-const bookings=require('../models/booking')
+
 
 
 dotenv.config()
@@ -27,8 +31,20 @@ const sendresetPasswordMail = async (name, email, token) => {
             from: "eshoes518@gmail.com",
             to: email,
             subject: "Link for reset password",
-            html: `<p>Hi ${name}, please click the link below and <a href="http://localhost:4200/resetsubmit?token=${token}">Reset</a> your password.</p>`
-        }
+            html: `
+              <div style="font-family: Arial, sans-serif; background-color: black; padding: 20px;">
+                <p style="color: white; font-size: 16px; margin-bottom: 20px; font-weight-bold">
+                  Hi ${name}, please click the button below to reset your password:
+                </p>
+                <a
+                  href="http://localhost:4200/resetsubmit?token=${token}"
+                  style="display: inline-block; background-color: #007bff; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 4px;"
+                >
+                  Reset Password
+                </a>
+              </div>
+            `,
+          };
         transporter.sendMail(mailOption, function (error, infor) {
             a
             if (error) {
@@ -78,11 +94,11 @@ const postSignup = async (req, res) => {
         //     password: hashedpassword
         // }
         // this is the code for save the user first if user enter the sign up button and later we want to verify using the otp
-        const results=new User({
-            name:req.body.name,
-            email:req.body.email,
-            phone:req.body.phone,
-            password:hashedpassword
+        const results = new User({
+            name: req.body.name,
+            email: req.body.email,
+            phone: req.body.phone,
+            password: hashedpassword
         })
 
 
@@ -127,7 +143,7 @@ const postotp = async (req, res) => {
         //     password: req.body.phone.password
         // })
         // const result = await user.save()
-        
+
         res.json({
             message: "verification is success"
         })
@@ -154,29 +170,29 @@ const postlogin = async (req, res) => {
 
         return res.status(400).send({ message: "Invalid Password" })
     } else {
-        if(user.isverified){
+        if (user.isverified) {
             if (user.status) {
                 const { _id } = await user.toJSON();
                 const token = jwt.sign({ _id: _id }, "secret")
                 const result = await User.updateOne({ _id: user._id }, { $set: { jwttoken: token } })
-    
+
                 return res.json({
                     token: token,
-    
+
                 })
-    
+
             } else {
                 return res.status(400).json({ message: "Your are Blocked" })
             }
 
-        }else{
+        } else {
             return res.status(400).json({
-                message:"Your account is not verifid please verify it",
-                phone:user.phone,
-                email:user.email
-        })
+                message: "Your account is not verifid please verify it",
+                phone: user.phone,
+                email: user.email
+            })
         }
-       
+
     }
 
 }
@@ -261,34 +277,34 @@ const getprofessionaldata = async (req, res) => {
         let id = req.query.id
 
         let data = await professional.findOne({ _id: id })
-        console.log(data);
+        // console.log(data);
         res.json(data)
     } catch (error) {
         console.log(error)
     }
 
 }
-const verifyaccount=async(req,res)=>{
+const verifyaccount = async (req, res) => {
     try {
-        let phone=req.query.phone
+        let phone = req.query.phone
         await twilio.verify.v2
-        .services("VA4b9331e54c68f1726cd24a61b00d87f9")
-        .verifications.create({
-            to: "+91" +phone,
-            channel: "sms",
-        });
-        
+            .services("VA4b9331e54c68f1726cd24a61b00d87f9")
+            .verifications.create({
+                to: "+91" + phone,
+                channel: "sms",
+            });
+
     } catch (error) {
         console.log(error)
     }
 }
-const booking=async(req,res)=>{
+const booking = async (req, res) => {
     try {
         const token = req.headers.authorization?.split(" ")[1];
-    
+
         jwt.verify(token, 'secret', async (err, decoded) => {
             if (err) {
-              
+
                 res.status(401).json({
                     auth: false,
                     status: "failed",
@@ -297,41 +313,41 @@ const booking=async(req,res)=>{
             } else {
 
                 const userId = decoded._id;
-               
-                
-                let result=new bookings({
-                    user:userId,
-                    name:req.body.name,
-                    housename:req.body.housename,
-                    place:req.body.place,
-                    event:req.body.event,
-                    date:req.body.date,
-                    phone:req.body.phone,
-                    professional:req.body.professional,
-                    amount:req.body.amount
+
+
+                let result = new bookings({
+                    user: userId,
+                    name: req.body.name,
+                    housename: req.body.housename,
+                    place: req.body.place,
+                    event: req.body.event,
+                    date: req.body.date,
+                    phone: req.body.phone,
+                    professional: req.body.professional,
+                    amount: req.body.amount
 
 
                 })
                 await result.save()
                 res.json({
-                    message:"sucess"
+                    message: "sucess"
                 })
             }
 
         });
-        
-        
+
+
     } catch (error) {
         console.log(error)
     }
 }
-const getbookingdatas=async(req,res)=>{
+const getbookingdatas = async (req, res) => {
     try {
         const token = req.headers.authorization?.split(" ")[1];
-    
+
         jwt.verify(token, 'secret', async (err, decoded) => {
             if (err) {
-              
+
                 res.status(401).json({
                     auth: false,
                     status: "failed",
@@ -340,19 +356,175 @@ const getbookingdatas=async(req,res)=>{
             } else {
 
                 const userId = decoded._id;
-               let datas=await bookings.find ({user:userId,status:true}).populate("professional")
-               console.log(datas)
-                
+                let datas = await bookings.find({ user: userId, status: true }).populate("professional")
                 res.json(datas)
             }
 
         });
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+const chatconnection = async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+
+        jwt.verify(token, 'secret', async (err, decoded) => {
+            if (err) {
+                res.status(401).json({
+                    auth: false,
+                    status: "failed",
+                    message: "Failed to authenticate",
+                });
+            } else {
+                const userId = decoded._id;
+                const connectionexsist = await connection.findOne({
+                    'connections.user': userId,
+                    'connections.professional': req.params.professionalId
+                })
+                if (connectionexsist) {
+
+                    res.json({ message: "success" })
+
+                } else {
+                    let result = new connection({
+                        connections: {
+                            user: userId,
+                            professional: req.params.professionalId
+                        }
+                    }) 
+                    let data = await result.save()
+                    res.json(data)
+                }
+            }
+
+        });
+
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+const userChats = async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        jwt.verify(token, 'secret', async (err, decoded) => {
+            if (err) {
+                res.status(401).json({
+                    auth: false,
+                    status: "failed",
+                    message: "Failed to authenticate",
+                });
+            } else {
+                const userId = decoded._id
+                const data = await connection.find({ 'connections.user': userId }).populate("connections.professional")
+                res.json({data:data,id:userId})
+            }
+        });
+    } catch (error) {
+        console.log(error) 
+    }
+}
+const allmessages = async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        jwt.verify(token, 'secret', async (err, decoded) => {
+            if (err) {
+                res.status(401).json({
+                    auth: false,
+                    status: "failed",
+                    message: "Failed to authenticate",
+                });
+            } else {
+                const userId = decoded._id;
+                const professionalId = req.params.professionalId;
+                const data = await connection.findOne({
+                    'connections.user': userId,
+                    'connections.professional': professionalId
+                });
+               if(data){
+                const allMessages = await message.find({ connectionid: data._id }).sort('createdAt')
+               
+                res.json({
+                    result:allMessages,
+                    cid:data._id,
+                    userid:data.connections.user
+                })
+
+               }else{
+                res.status(500).json({message:"somthing went wrong"})
+               }
+                
+            }
+        });
+
+
+      
         
     } catch (error) {
         console.log(error)
     }
 }
+const addmessage = async (req, res) => {
+    let data=req.body
+    try {
+        const datas=req.body
+        const result = new message({
+            connectionid: datas.connectionid,
+            from: datas.from,
+            to: datas.to,
+            message: datas.message
+        })
+        const data = await result.save()
+        res.json(data)
+    } catch (error) {
+        console.log(error)
+    }
+}
+// const getallmessage = async (req, res) => {
+//     try {
+//         let id = req.params.connectionid
+//         let data = await message.find({ connectionid: id }).sort('createdAt');
+//         res.json(data)
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
 
+const addreview=async(req,res)=>{
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        jwt.verify(token, 'secret', async (err, decoded) => {
+            if (err) {
+                res.status(401).json({
+                    auth: false,
+                    status: "failed",
+                    message: "Failed to authenticate",
+                });
+            } else {
+                const userId = decoded._id;
+               const data=req.body
+               await professional.updateOne({_id:data.profid},{$push:{reviews:{review:data.review,user:userId}}})
+               res.json({message:"success"})
+                
+            }
+        });
+
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
+const getbanner=async(req,res)=>{
+    try {
+
+        let data=await banner.find()
+        res.json(data)
+    } catch (error) {
+        console.log(error)
+    }
+}
 module.exports = {
     postSignup,
     postotp,
@@ -364,5 +536,12 @@ module.exports = {
     getprofessionaldata,
     verifyaccount,
     booking,
-    getbookingdatas
+    getbookingdatas,
+    chatconnection,
+    userChats,
+    allmessages,
+    addmessage,
+    addreview,
+    getbanner
+    // getallmessage
 }

@@ -1,7 +1,7 @@
 const mongoose =require('mongoose')
 const objectId=mongoose.Types.ObjectId  
 const connectionSchema=new mongoose.Schema({
-    connection:{
+    connections:{
         user:{
             type:objectId,
             ref:"user",
