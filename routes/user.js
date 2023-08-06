@@ -17,7 +17,7 @@ userRouter.get('/getbookingdatas',userController.getbookingdatas)
 
 userRouter.post('/chatconnection/:professionalId',userController.chatconnection)
 userRouter.get("/userchat",userController.userChats)
-userRouter.get("/findchat/:professionalId",userController.allmessages)
+userRouter.get("/allmessage/:professionalId",userController.allmessages)
 userRouter.post('/message',userController.addmessage)
 // userRouter.post("/allmessages/:connectionid",userController.getallmessage)
 userRouter.post("/addreview",userController.addreview)

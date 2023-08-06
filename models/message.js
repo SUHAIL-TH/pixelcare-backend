@@ -20,6 +20,7 @@ const messageSchema=new mongoose.Schema({
 
     }
 },{
-    timestamps:true
-})
+    timestamps:true,
+    capped: { size: 102400, max: 50 },
+},)
 module.exports=mongoose.model('message',messageSchema)

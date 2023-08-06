@@ -266,7 +266,6 @@ const resetpassword = async (req, res) => {
 const getprofessionallist = async (req, res) => {
     try {
         let data = await professional.find({ isVerified: true, blocked: false })
-        console.log(data);
         res.json(data)
     } catch (error) {
         console.log(error);
@@ -275,9 +274,7 @@ const getprofessionallist = async (req, res) => {
 const getprofessionaldata = async (req, res) => {
     try {
         let id = req.query.id
-
-        let data = await professional.findOne({ _id: id })
-        // console.log(data);
+        let data = await professional.findOne({ _id: id }).populate("reviews.user")
         res.json(data)
     } catch (error) {
         console.log(error)
@@ -293,7 +290,6 @@ const verifyaccount = async (req, res) => {
                 to: "+91" + phone,
                 channel: "sms",
             });
-
     } catch (error) {
         console.log(error)
     }
@@ -301,20 +297,15 @@ const verifyaccount = async (req, res) => {
 const booking = async (req, res) => {
     try {
         const token = req.headers.authorization?.split(" ")[1];
-
         jwt.verify(token, 'secret', async (err, decoded) => {
             if (err) {
-
                 res.status(401).json({
                     auth: false,
                     status: "failed",
                     message: "Failed to authenticate",
                 });
             } else {
-
                 const userId = decoded._id;
-
-
                 let result = new bookings({
                     user: userId,
                     name: req.body.name,
@@ -325,15 +316,12 @@ const booking = async (req, res) => {
                     phone: req.body.phone,
                     professional: req.body.professional,
                     amount: req.body.amount
-
-
                 })
                 await result.save()
                 res.json({
                     message: "sucess"
                 })
             }
-
         });
 
 
@@ -347,7 +335,6 @@ const getbookingdatas = async (req, res) => {
 
         jwt.verify(token, 'secret', async (err, decoded) => {
             if (err) {
-
                 res.status(401).json({
                     auth: false,
                     status: "failed",
@@ -356,7 +343,7 @@ const getbookingdatas = async (req, res) => {
             } else {
 
                 const userId = decoded._id;
-                let datas = await bookings.find({ user: userId, status: true }).populate("professional")
+                let datas = await bookings.find({ user: userId, status: true }).populate("professional").sort({createdAt:-1})
                 res.json(datas)
             }
 
@@ -451,11 +438,9 @@ const allmessages = async (req, res) => {
                     cid:data._id,
                     userid:data.connections.user
                 })
-
                }else{
                 res.status(500).json({message:"somthing went wrong"})
-               }
-                
+               }   
             }
         });
 
@@ -505,9 +490,8 @@ const addreview=async(req,res)=>{
             } else {
                 const userId = decoded._id;
                const data=req.body
-               await professional.updateOne({_id:data.profid},{$push:{reviews:{review:data.review,user:userId}}})
-               res.json({message:"success"})
-                
+               await professional.updateOne({_id:data.profid},{$push:{reviews:{review:data.review,user:userId,rating:data.rating,date:data.time}}})
+               res.json({message:"success"})   
             }
         });
 
@@ -519,7 +503,8 @@ const addreview=async(req,res)=>{
 const getbanner=async(req,res)=>{
     try {
 
-        let data=await banner.find()
+        let data=await banner.find({blocked:false})
+        console.log(data);
         res.json(data)
     } catch (error) {
         console.log(error)

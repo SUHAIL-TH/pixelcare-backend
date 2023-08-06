@@ -46,6 +46,7 @@ adminRouter.post('/acceptprofessional/:id', adminController.acceptprofessional)
 adminRouter.get('/getacceptedprofessionals', adminController.getacceptedprofessionals)
 adminRouter.post('/blockprofessional/:id', adminController.blockprofessional)
 adminRouter.post('/unblockprofessional/:id', adminController.unblockprofessional)
-
+adminRouter.get('/dashboarddata',adminController.getdashboarddata)
+adminRouter.get('/bookingdata',adminController.getbookingdata)
 
 module.exports = adminRouter

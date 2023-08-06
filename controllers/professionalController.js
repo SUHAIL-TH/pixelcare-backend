@@ -194,7 +194,7 @@ const getbookingdata = async (req, res) => {
 
                 const Id = decoded._id;
 
-                const data = await booking.find({ professional: Id }).populate('user')
+                const data = await booking.find({ professional: Id }).populate('user').sort({createdAt:-1})
                 console.log(data)
                 res.json(data)
 

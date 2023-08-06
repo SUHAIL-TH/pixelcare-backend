@@ -82,6 +82,15 @@ const professionalSchema = new mongoose.Schema({
                  required:true
             },
             review:{
+                type:String,    
+                required:true
+            },
+            rating:{
+                type:Number,
+                required:true,
+                default:0
+            },
+            date:{
                 type:String,
                 required:true
             }
