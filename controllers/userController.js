@@ -9,7 +9,10 @@ const nodemailer = require("nodemailer");
 const connection = require('../models/connection')
 const message = require('../models/message')
 const bookings = require('../models/booking')
-const banner=require('../models/banner')
+const banner = require('../models/banner')
+const contact = require('../models/contact')
+
+
 
 
 
@@ -44,7 +47,7 @@ const sendresetPasswordMail = async (name, email, token) => {
                 </a>
               </div>
             `,
-          };
+        };
         transporter.sendMail(mailOption, function (error, infor) {
             a
             if (error) {
@@ -124,9 +127,6 @@ const postSignup = async (req, res) => {
 }
 const postotp = async (req, res) => {
     const otp = req.body.otp
-
-    console.log(req.body)
-
     const result = await twilio.verify.v2
         .services("VA4b9331e54c68f1726cd24a61b00d87f9")
         .verificationChecks.create({
@@ -296,34 +296,23 @@ const verifyaccount = async (req, res) => {
 }
 const booking = async (req, res) => {
     try {
-        const token = req.headers.authorization?.split(" ")[1];
-        jwt.verify(token, 'secret', async (err, decoded) => {
-            if (err) {
-                res.status(401).json({
-                    auth: false,
-                    status: "failed",
-                    message: "Failed to authenticate",
-                });
-            } else {
-                const userId = decoded._id;
-                let result = new bookings({
-                    user: userId,
-                    name: req.body.name,
-                    housename: req.body.housename,
-                    place: req.body.place,
-                    event: req.body.event,
-                    date: req.body.date,
-                    phone: req.body.phone,
-                    professional: req.body.professional,
-                    amount: req.body.amount
-                })
-                await result.save()
-                res.json({
-                    message: "sucess"
-                })
-            }
-        });
 
+        const userId = req.userId;
+        let result = new bookings({
+            user: userId,
+            name: req.body.name,
+            housename: req.body.housename,
+            place: req.body.place,
+            event: req.body.event,
+            date: req.body.date,
+            phone: req.body.phone,
+            professional: req.body.professional,
+            amount: req.body.amount
+        })
+        await result.save()
+        res.json({
+            message: "sucess"
+        })
 
     } catch (error) {
         console.log(error)
@@ -331,23 +320,12 @@ const booking = async (req, res) => {
 }
 const getbookingdatas = async (req, res) => {
     try {
-        const token = req.headers.authorization?.split(" ")[1];
 
-        jwt.verify(token, 'secret', async (err, decoded) => {
-            if (err) {
-                res.status(401).json({
-                    auth: false,
-                    status: "failed",
-                    message: "Failed to authenticate",
-                });
-            } else {
 
-                const userId = decoded._id;
-                let datas = await bookings.find({ user: userId, status: true }).populate("professional").sort({createdAt:-1})
-                res.json(datas)
-            }
+        const userId = req.userId;
+        let datas = await bookings.find({ user: userId, status: true }).populate("professional").sort({ createdAt: -1 })
+        res.json(datas)
 
-        });
 
     } catch (error) {
         console.log(error)
@@ -355,39 +333,26 @@ const getbookingdatas = async (req, res) => {
 }
 const chatconnection = async (req, res) => {
     try {
-        const token = req.headers.authorization?.split(" ")[1];
 
-        jwt.verify(token, 'secret', async (err, decoded) => {
-            if (err) {
-                res.status(401).json({
-                    auth: false,
-                    status: "failed",
-                    message: "Failed to authenticate",
-                });
-            } else {
-                const userId = decoded._id;
-                const connectionexsist = await connection.findOne({
-                    'connections.user': userId,
-                    'connections.professional': req.params.professionalId
-                })
-                if (connectionexsist) {
+        const userId = req.userId;
+        const connectionexsist = await connection.findOne({
+            'connections.user': userId,
+            'connections.professional': req.params.professionalId
+        })
+        if (connectionexsist) {
 
-                    res.json({ message: "success" })
+            res.json({ message: "success" })
 
-                } else {
-                    let result = new connection({
-                        connections: {
-                            user: userId,
-                            professional: req.params.professionalId
-                        }
-                    }) 
-                    let data = await result.save()
-                    res.json(data)
+        } else {
+            let result = new connection({
+                connections: {
+                    user: userId,
+                    professional: req.params.professionalId
                 }
-            }
-
-        });
-
+            })
+            let data = await result.save()
+            res.json(data)
+        }
 
     } catch (error) {
         console.log(error)
@@ -395,66 +360,42 @@ const chatconnection = async (req, res) => {
 }
 const userChats = async (req, res) => {
     try {
-        const token = req.headers.authorization?.split(" ")[1];
-        jwt.verify(token, 'secret', async (err, decoded) => {
-            if (err) {
-                res.status(401).json({
-                    auth: false,
-                    status: "failed",
-                    message: "Failed to authenticate",
-                });
-            } else {
-                const userId = decoded._id
-                const data = await connection.find({ 'connections.user': userId }).populate("connections.professional")
-                res.json({data:data,id:userId})
-            }
-        });
+        const userId = req.userId
+        const data = await connection.find({ 'connections.user': userId }).populate("connections.professional")
+        res.json({ data: data, id: userId })
     } catch (error) {
-        console.log(error) 
+        console.log(error)
     }
 }
 const allmessages = async (req, res) => {
     try {
-        const token = req.headers.authorization?.split(" ")[1];
-        jwt.verify(token, 'secret', async (err, decoded) => {
-            if (err) {
-                res.status(401).json({
-                    auth: false,
-                    status: "failed",
-                    message: "Failed to authenticate",
-                });
-            } else {
-                const userId = decoded._id;
-                const professionalId = req.params.professionalId;
-                const data = await connection.findOne({
-                    'connections.user': userId,
-                    'connections.professional': professionalId
-                });
-               if(data){
-                const allMessages = await message.find({ connectionid: data._id }).sort('createdAt')
-               
-                res.json({
-                    result:allMessages,
-                    cid:data._id,
-                    userid:data.connections.user
-                })
-               }else{
-                res.status(500).json({message:"somthing went wrong"})
-               }   
-            }
+
+        const userId = req.userId;
+        const professionalId = req.params.professionalId;
+        const data = await connection.findOne({
+            'connections.user': userId,
+            'connections.professional': professionalId
         });
+        if (data) {
+            const allMessages = await message.find({ connectionid: data._id }).sort('createdAt')
 
+            res.json({
+                result: allMessages,
+                cid: data._id,
+                userid: data.connections.user
+            })
+        } else {
+            res.status(500).json({ message: "somthing went wrong" })
+        }
 
-      
-        
     } catch (error) {
         console.log(error)
     }
 }
 const addmessage = async (req, res) => {
-    let data=req.body
+
     try {
-        const datas=req.body
+        const datas = req.body
         const result = new message({
             connectionid: datas.connectionid,
             from: datas.from,
@@ -463,6 +404,51 @@ const addmessage = async (req, res) => {
         })
         const data = await result.save()
         res.json(data)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+const addreview = async (req, res) => {
+    try {
+
+        const userId = req.userId;
+        const data = req.body
+        await professional.updateOne({ _id: data.profid }, { $push: { reviews: { review: data.review, user: userId, rating: data.rating, date: data.time } } })
+        res.json({ message: "success" })
+
+
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+const getbanner = async (req, res) => {
+    try {
+
+        let data = await banner.find({ blocked: false })
+        console.log(data);
+        res.json(data)
+    } catch (error) {
+        console.log(error)
+    }
+}
+const contactfrom = async (req, res) => {
+    try {
+        const id = req.userId
+        data = req.body
+        const result = new contact({
+            user: id,
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            message: data.message
+        })
+        await result.save()
+        res.json({ message: "success" })
+
+
     } catch (error) {
         console.log(error)
     }
@@ -476,40 +462,6 @@ const addmessage = async (req, res) => {
 //         console.log(error)
 //     }
 // }
-
-const addreview=async(req,res)=>{
-    try {
-        const token = req.headers.authorization?.split(" ")[1];
-        jwt.verify(token, 'secret', async (err, decoded) => {
-            if (err) {
-                res.status(401).json({
-                    auth: false,
-                    status: "failed",
-                    message: "Failed to authenticate",
-                });
-            } else {
-                const userId = decoded._id;
-               const data=req.body
-               await professional.updateOne({_id:data.profid},{$push:{reviews:{review:data.review,user:userId,rating:data.rating,date:data.time}}})
-               res.json({message:"success"})   
-            }
-        });
-
-        
-    } catch (error) {
-        console.log(error)
-    }
-}
-const getbanner=async(req,res)=>{
-    try {
-
-        let data=await banner.find({blocked:false})
-        console.log(data);
-        res.json(data)
-    } catch (error) {
-        console.log(error)
-    }
-}
 module.exports = {
     postSignup,
     postotp,
@@ -527,6 +479,7 @@ module.exports = {
     allmessages,
     addmessage,
     addreview,
-    getbanner
+    getbanner,
+    contactfrom
     // getallmessage
 }

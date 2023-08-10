@@ -101,7 +101,7 @@ const getprofileData = async (req, res) => {
 
                 const userId = decoded._id;
                 const username = decoded.iat;
-                let data = await professional.findOne({ _id: userId })
+                let data = await professional.findOne({ _id: userId }).populate('reviews.user')
 
                 res.send(data)
 
