@@ -36,12 +36,12 @@ const upload = multer({
 
 professionalRouter.post("/postsignup", upload.fields([{ name: 'image' }, { name: 'photo' }]), professionalController.postsignup);
 professionalRouter.post("/postlogin", professionalController.postlogin),
-professionalRouter.get("/getprofileData",professionalController.getprofileData)
-professionalRouter.post('/changeprofile',upload.single('profile'),professionalController.changeProfile)
-professionalRouter.post('/posteditprofile',professionalController.posteditprofile)
-professionalRouter.post('/postaddimage',upload.single('uploadimage'),professionalController.addphotos)
-professionalRouter.get('/getbookingdata',professionalController.getbookingdata)
-professionalRouter.get('/professionalchatlist',professionalController.professionalchats)
-professionalRouter.get('/findchat/:userid',professionalController.findchat)
-professionalRouter.post('/message',professionalController.addmessage)
+professionalRouter.get("/getprofileData", professionalController.getprofileData)
+professionalRouter.post('/changeprofile', upload.single('profile'), professionalController.changeProfile)
+professionalRouter.post('/posteditprofile', professionalController.posteditprofile)
+professionalRouter.post('/postaddimage', upload.single('uploadimage'), professionalController.addphotos)
+professionalRouter.get('/getbookingdata', professionalController.getbookingdata)
+professionalRouter.get('/professionalchatlist', professionalController.professionalchats)
+professionalRouter.get('/findchat/:userid', professionalController.findchat)
+professionalRouter.post('/message', professionalController.addmessage)
 module.exports = professionalRouter

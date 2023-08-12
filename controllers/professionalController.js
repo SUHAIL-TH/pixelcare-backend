@@ -194,7 +194,7 @@ const getbookingdata = async (req, res) => {
 
                 const Id = decoded._id;
 
-                const data = await booking.find({ professional: Id }).populate('user').sort({createdAt:-1})
+                const data = await booking.find({ professional: Id }).populate('user').sort({ createdAt: -1 })
                 console.log(data)
                 res.json(data)
 
@@ -221,7 +221,7 @@ const professionalchats = async (req, res) => {
 
                 const professionalId = decoded._id;
                 const data = await connection.find({ 'connections.professional': professionalId }).populate("connections.user")
-                res.json({data:data,id:professionalId})
+                res.json({ data: data, id: professionalId })
 
             }
 
@@ -251,13 +251,13 @@ const findchat = async (req, res) => {
                 })
                 if (data) {
                     const allmessages = await message.find({ connectionid: data._id }).sort('createdAt')
-                    
+
                     res.json({
-                        result:allmessages,
-                        cid:data._id,
-                        prof:data.connections.professional
+                        result: allmessages,
+                        cid: data._id,
+                        prof: data.connections.professional
                     })
-                }else {
+                } else {
                     res.status(400).json({ message: "somthing went wrong" })
                 }
 
@@ -271,9 +271,9 @@ const findchat = async (req, res) => {
         console.log(error)
     }
 }
-const addmessage=async(req,res)=>{
+const addmessage = async (req, res) => {
     try {
-        let datas=req.body
+        let datas = req.body
         console.log(datas);
         let result = new message({
             connectionid: datas.connectionid,
@@ -284,7 +284,7 @@ const addmessage=async(req,res)=>{
         let data = await result.save()
         console.log(data)
         res.json(data)
-        
+
     } catch (error) {
         console.log(error)
     }

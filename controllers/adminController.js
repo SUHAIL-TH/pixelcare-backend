@@ -56,7 +56,7 @@ const unblockuser = async (req, res) => {
         console.log(id);
         await User.updateOne({ _id: id }, { $set: { status: true } })
         res.json({ message: "success" })
-       
+
 
     } catch (error) {
         console.log(error)
@@ -201,37 +201,37 @@ const unblockprofessional = async (req, res) => {
     }
 
 }
-const getdashboarddata=async(req,res)=>{
+const getdashboarddata = async (req, res) => {
     try {
-        const usercount=await User.find().count()
-        const professionalverifiedcount=await professional.find({isVerified:true }).count()
-        const professionalnotverifiedcount=await professional.find({isVerified:false }).count()
-        const blockedprofessional=await professional.find({blocked:true }).count()
-        const bannercount=await banner.find({blocked:false}).count()
-        let bookedcount=await booking.find().count()
-        const data={
-            usercount:usercount,
-            professionalnotverifiedcount:professionalnotverifiedcount,
-            professionalverifiedcount:professionalverifiedcount,
-            bannercount:bannercount,
-            bookedcount:bookedcount,
-            blockedprofessional:blockedprofessional
+        const usercount = await User.find().count()
+        const professionalverifiedcount = await professional.find({ isVerified: true }).count()
+        const professionalnotverifiedcount = await professional.find({ isVerified: false }).count()
+        const blockedprofessional = await professional.find({ blocked: true }).count()
+        const bannercount = await banner.find({ blocked: false }).count()
+        let bookedcount = await booking.find().count()
+        const data = {
+            usercount: usercount,
+            professionalnotverifiedcount: professionalnotverifiedcount,
+            professionalverifiedcount: professionalverifiedcount,
+            bannercount: bannercount,
+            bookedcount: bookedcount,
+            blockedprofessional: blockedprofessional
         }
-       
+
         res.json(data)
-      
+
     } catch (error) {
         console.log(error)
     }
 }
-const getbookingdata=async(req,res)=>{
+const getbookingdata = async (req, res) => {
     try {
-        let bookingdata=await booking.find({status:true}).populate("professional").sort({createdAt:-1})
-    
+        let bookingdata = await booking.find({ status: true }).populate("professional").sort({ createdAt: -1 })
+
         res.json(bookingdata)
     } catch (error) {
         console.log(error)
-        res.json(500).json({message:"servererror"})
+        res.json(500).json({ message: "servererror" })
     }
 }
 
