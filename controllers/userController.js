@@ -207,16 +207,12 @@ const resentotp = async (req, res) => {
             to: "+91" + data.phone,
             channel: "sms",
         });
-
-
-
 }
 const verifynumber = async (req, res) => {
     try {
         const email = req.body.email
         const acname = await User.findOne({ email: email })
         console.log(acname);
-
         if (acname !== null) {
             console.log("hii");
             if (acname.status === true) {
@@ -228,16 +224,11 @@ const verifynumber = async (req, res) => {
             } else {
                 res.status(400).send({ message: "This email is blocked" })
             }
-
-
-
-
         } else {
             res.status(400).send({
                 message: "Email is not found"
             })
         }
-
     } catch (error) {
 
         console.log(error)
@@ -296,7 +287,6 @@ const verifyaccount = async (req, res) => {
 }
 const booking = async (req, res) => {
     try {
-
         const userId = req.userId;
         let result = new bookings({
             user: userId,
@@ -320,20 +310,15 @@ const booking = async (req, res) => {
 }
 const getbookingdatas = async (req, res) => {
     try {
-
-
         const userId = req.userId;
         let datas = await bookings.find({ user: userId, status: true }).populate("professional").sort({ createdAt: -1 })
         res.json(datas)
-
-
     } catch (error) {
         console.log(error)
     }
 }
 const chatconnection = async (req, res) => {
     try {
-
         const userId = req.userId;
         const connectionexsist = await connection.findOne({
             'connections.user': userId,
@@ -417,16 +402,12 @@ const addreview = async (req, res) => {
         const data = req.body
         await professional.updateOne({ _id: data.profid }, { $push: { reviews: { review: data.review, user: userId, rating: data.rating, date: data.time } } })
         res.json({ message: "success" })
-
-
-
     } catch (error) {
         console.log(error)
     }
 }
 const getbanner = async (req, res) => {
     try {
-
         let data = await banner.find({ blocked: false })
         console.log(data);
         res.json(data)
@@ -447,8 +428,6 @@ const contactfrom = async (req, res) => {
         })
         await result.save()
         res.json({ message: "success" })
-
-
     } catch (error) {
         console.log(error)
     }

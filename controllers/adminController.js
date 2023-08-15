@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const professional = require('../models/professional')
 const banner = require('../models/banner')
 const booking = require('../models/booking')
+const contact=require('../models/contact')
 
 
 
@@ -234,6 +235,16 @@ const getbookingdata = async (req, res) => {
         res.json(500).json({ message: "servererror" })
     }
 }
+const getcontacteddata=async(req,res)=>{
+    try {
+        const contactData=await contact.find()
+        console.log(contactData);
+        res.json(contactData)
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 module.exports = {
     postlogin,
@@ -250,6 +261,7 @@ module.exports = {
     unblockprofessional,
     getacceptedprofessionals,
     getdashboarddata,
-    getbookingdata
+    getbookingdata,
+    getcontacteddata
 
 }

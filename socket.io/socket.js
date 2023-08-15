@@ -1,12 +1,13 @@
 const socketIO = require('socket.io') // Attach Socket.io to the HTTP server
-
+const dotenv=require('dotenv')
+dotenv.config()
 
 
 function intializeSocket(server) {
     const io = socketIO(server, {
         pingTimeout: 60000,
         cors: {
-            origin: 'http://localhost:4200'
+            origin: process.env.origin
         },
       });
 

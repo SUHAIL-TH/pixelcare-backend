@@ -58,7 +58,7 @@ dbconnect.dbconnect();
 //cross-origin resource sharing
 app.use(cors({
   credentials: true,
-  origin: 'http://localhost:4200'
+  origin: process.env.origin
 }));
 app.use('/public/images', express.static('public/images'));
 app.use(morgan("dev"));
