@@ -76,14 +76,11 @@ const addbanner = async (req, res) => {
             })
             await result.save()
             res.status(200).json({ message: "Banner added successfully" })
-
         } else {
             res.status(200).json({
                 message: "Somthing went wrong"
             })
         }
-
-
     } catch (error) {
         console.log(error)
     }
@@ -92,7 +89,6 @@ const getbanner = async (req, res) => {
     try {
         let data = await Banner.find()
         res.status(200).json(data)
-
     } catch (error) {
         console.log(error)
     }
@@ -107,7 +103,6 @@ const blockbanner = async (req, res) => {
             res.status(200).json({
                 message: "success"
             })
-
         } else {
             res.status(400).json({
                 message: "Somthing went wrong"
@@ -127,7 +122,6 @@ const unblockbanner = async (req, res) => {
             res.status(200).json({
                 message: "success"
             })
-
         } else {
             res.status(400).json({
                 message: "Somthing went wrong"
@@ -141,8 +135,6 @@ const unblockbanner = async (req, res) => {
 const getprofessionals = async (req, res) => {
     try {
         let data = await professional.find({ isVerified: false })
-
-
         return res.json(data)
     } catch (error) {
         console.log(error)
@@ -151,8 +143,6 @@ const getprofessionals = async (req, res) => {
 const getacceptedprofessionals = async (req, res) => {
     try {
         let data = await professional.find({ isVerified: true })
-
-
         return res.json(data)
     } catch (error) {
         console.log(error)
@@ -168,7 +158,6 @@ const acceptprofessional = async (req, res) => {
         return res.json({
             data
         })
-
     } catch (error) {
         res.status(400).json({ message: "Somthing went wrong" })
         console.log(error)

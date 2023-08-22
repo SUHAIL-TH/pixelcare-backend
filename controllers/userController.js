@@ -72,15 +72,7 @@ const sendresetPasswordMail = async (name, email, token) => {
 const twilio = require("twilio")(process.env.accountsid, process.env.authtoken, {
     lazyLoading: true,
 });
-
-
-
-
-
-
-
 const postSignup = async (req, res) => {
-
     let email = req.body.email
 
     const emailexsist = await User.findOne({ email: email })
@@ -90,12 +82,6 @@ const postSignup = async (req, res) => {
         })
     } else {
         let hashedpassword = await bcrypt.hash(req.body.password, 10)
-        // const result = {
-        //     name: req.body.name,
-        //     email: req.body.email,
-        //     phone: req.body.phone,
-        //     password: hashedpassword
-        // }
         // this is the code for save the user first if user enter the sign up button and later we want to verify using the otp
         const results = new User({
             name: req.body.name,
@@ -103,22 +89,13 @@ const postSignup = async (req, res) => {
             phone: req.body.phone,
             password: hashedpassword
         })
-
-
-
         await results.save()
-
-
-
-        await twilio.verify.v2
-            .services("VA4b9331e54c68f1726cd24a61b00d87f9")
-            .verifications.create({
-                to: "+91" + req.body.phone,
-                channel: "sms",
-            });
-
-
-
+        // await twilio.verify.v2
+        //     .services("VA4b9331e54c68f1726cd24a61b00d87f9")
+        //     .verifications.create({
+        //         to: "+91" + req.body.phone,
+        //         channel: "sms",
+        //     });
         res.json({
             data: results
 
@@ -134,16 +111,7 @@ const postotp = async (req, res) => {
             code: otp,
         });
     if (result.valid === true) {
-
         await User.updateOne({ email: req.body.phone.email }, { $set: { isverified: true } })
-        // const user = new User({
-        //     name: req.body.phone.name,
-        //     email: req.body.phone.email,
-        //     phone: req.body.phone.phone,
-        //     password: req.body.phone.password
-        // })
-        // const result = await user.save()
-
         res.json({
             message: "verification is success"
         })
