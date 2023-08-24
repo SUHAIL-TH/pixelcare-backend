@@ -40,7 +40,7 @@ const sendresetPasswordMail = async (name, email, token) => {
                   Hi ${name}, please click the button below to reset your password:
                 </p>
                 <a
-                  href="http://localhost:4200/resetsubmit?token=${token}"
+                  href="https://pixel-craze.netlify.app/resetsubmit?token=${token}"
                   style="display: inline-block; background-color: #007bff; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 4px;"
                 >
                   Reset Password
@@ -90,12 +90,12 @@ const postSignup = async (req, res) => {
             password: hashedpassword
         })
         await results.save()
-        // await twilio.verify.v2
-        //     .services("VA4b9331e54c68f1726cd24a61b00d87f9")
-        //     .verifications.create({
-        //         to: "+91" + req.body.phone,
-        //         channel: "sms",
-        //     });
+        await twilio.verify.v2
+            .services("VA4b9331e54c68f1726cd24a61b00d87f9")
+            .verifications.create({
+                to: "+91" + req.body.phone,
+                channel: "sms",
+            });
         res.json({
             data: results
 
