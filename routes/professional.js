@@ -44,4 +44,5 @@ professionalRouter.get('/getbookingdata', professionalController.getbookingdata)
 professionalRouter.get('/professionalchatlist', professionalController.professionalchats)
 professionalRouter.get('/findchat/:userid', professionalController.findchat)
 professionalRouter.post('/message', professionalController.addmessage)
+professionalRouter.post('/deleteimage/:imgid',professionalController.deleteimage)
 module.exports = professionalRouter

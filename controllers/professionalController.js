@@ -135,7 +135,10 @@ const posteditprofile = async (req, res) => {
 
                 const userId = decoded._id;
                 console.log(userId);
-                await professional.updateOne({ _id: userId }, { $set: { name: req.body.name, ownername: req.body.ownername, email: req.body.email, phone: req.body.phone, place: req.body.place, experinces: req.body.experinces, specialized: req.body.specialized } })
+                await professional.updateOne({ _id: userId }, { $set: { name: req.body.name, ownername: req.body.ownername,
+                     email: req.body.email, phone: req.body.phone, place: req.body.place, experinces: req.body.experinces,
+                      specialized: req.body.specialized ,aboutus:req.body.aboutus
+                } })
 
                 res.json({ message: "success" })
 
@@ -253,6 +256,7 @@ const findchat = async (req, res) => {
                         cid: data._id,
                         prof: data.connections.professional
                     })
+
                 } else {
                     res.status(400).json({ message: "somthing went wrong" })
                 }
@@ -285,6 +289,31 @@ const addmessage = async (req, res) => {
         console.log(error)
     }
 }
+const deleteimage=async(req,res)=>{
+    try {
+        let imageid=req.params.imgid
+        console.log(imageid);
+        const token = req.headers.authorization?.split(" ")[1];
+        jwt.verify(token, 'secretprofessional', async (err, decoded) => {
+            if (err) {
+                console.log(err);
+                res.status(401).json({
+                    auth: false,
+                    status: "failed",
+                    message: "Failed to authenticate",
+                });
+            } else {
+                const professionalId = decoded._id;
+               let data=await professional.updateOne({_id:professionalId},{$pull:{images:{_id:imageid}}})   
+               res.json(data)
+            }
+
+        });
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 
 module.exports = {
@@ -297,7 +326,8 @@ module.exports = {
     getbookingdata,
     professionalchats,
     findchat,
-    addmessage
+    addmessage,
+    deleteimage
 
 
 }

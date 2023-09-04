@@ -24,13 +24,11 @@ const upload = multer({
             file.mimetype == "image/webp"
         ) {
             cb(null, true);
-
         } else {
             cb(null, false);
             return cb(new Error("only .png,.jpg,.jpeg,.webp formalt is allowed"));
         }
     },
-
 });
 
 adminRouter.post('/postlogin', adminController.postlogin)

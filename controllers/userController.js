@@ -125,7 +125,7 @@ const postotp = async (req, res) => {
 
 }
 const postlogin = async (req, res) => {
-
+  
     let user = await User.findOne({ email: req.body.email })
     console.log(user);
 
@@ -182,10 +182,8 @@ const verifynumber = async (req, res) => {
         const acname = await User.findOne({ email: email })
         console.log(acname);
         if (acname !== null) {
-            console.log("hii");
             if (acname.status === true) {
                 const randomstring = randomString.generate()
-
                 const data = await User.updateOne({ email: email }, { $set: { token: randomstring } })
                 sendresetPasswordMail(acname.name, acname.email, randomstring)
                 res.send({ message: "hii" })
