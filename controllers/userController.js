@@ -15,6 +15,7 @@ const contact = require('../models/contact')
 
 
 
+//all the logic for the user controller is listed here
 
 
 dotenv.config()
