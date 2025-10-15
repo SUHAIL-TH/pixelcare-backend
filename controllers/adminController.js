@@ -7,7 +7,8 @@ const banner = require('../models/banner')
 const booking = require('../models/booking')
 const contact=require('../models/contact')
 
-
+//all the logic for admin controller is listed here
+//
 
 
 const postlogin = async (req, res) => {
