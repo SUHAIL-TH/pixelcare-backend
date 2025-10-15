@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken')
 const booking = require('../models/booking')
 const connection = require('../models/connection')
 const message = require('../models/message')
+// all the logic for professional controller is listed here
+
 const postsignup = async (req, res) => {
     try {
 
